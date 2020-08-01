@@ -1,5 +1,6 @@
 'use strict';
 
+/*
 chrome.runtime.onInstalled.addListener(function() {
 
   chrome.storage.sync.set({color: '#3aa757'}, function() {
@@ -14,6 +15,18 @@ chrome.runtime.onInstalled.addListener(function() {
       ],
       actions: [new chrome.declarativeContent.ShowPageAction()]
     }]);
+  });
+
+});
+*/
+
+chrome.app.runtime.onLaunched.addListener(function() {
+
+  chrome.app.window.create('window.html', {
+    'outerBounds': {
+      'width': 1000,
+      'height': 800
+    }
   });
 
 });
