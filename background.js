@@ -22,6 +22,10 @@ chrome.runtime.onInstalled.addListener(function() {
 
 chrome.app.runtime.onLaunched.addListener(function() {
 
+  chrome.storage.sync.set({interval: 5000}, function() {
+    console.log("interval set to 5000");
+  });
+
   chrome.app.window.create('window.html', {
     'outerBounds': {
       'width': 1000,
