@@ -22,8 +22,8 @@ chrome.runtime.onInstalled.addListener(function() {
 
 chrome.app.runtime.onLaunched.addListener(function() {
 
-  chrome.storage.sync.set({interval: 5000}, function() {
-    console.log("interval set to 5000");
+  chrome.storage.sync.set({interval: 60000 * 2}, function() {
+    console.log("interval set to 2min");
   });
 
   chrome.app.window.create('window.html', {

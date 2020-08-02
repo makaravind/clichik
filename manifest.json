@@ -1,6 +1,6 @@
 {
   "name": "Clichik",
-  "version": "1.0",
+  "version": "0.0.1",
   "description": "Got a virtual party? Never miss a moment with this chrome by your side. Clichik will take care of taking screenshots while you enjoy you party!",
   "permissions": ["desktopCapture", "storage"],
   "app": {
