@@ -4,34 +4,44 @@
   <meta charset="UTF-8">
   <title>Clichik</title>
   <style>
-      video {
-          width: 320px;
-          height: 180px;
+      button {
+          display: inline-block;
+          padding: 0.3em 1.2em;
+          margin: 0 0.3em 0.3em 0;
+          border-radius: 2em;
+          box-sizing: border-box;
+          text-decoration: none;
+          font-weight: 300;
+          color: #FFFFFF;
+          background-color: #4eb5f1;
+          text-align: center;
+          transition: all 0.2s;
       }
 
-      #screenshot {
-          width: 320px;
-          height: 180px;
+      button:hover {
+          background-color: #4095c6;
+      }
+
+      .container {
+          display: grid;
+          place-content: center;
+      }
+
+      body {
+          background: #f953c6;  /* fallback for old browsers */
+          background: -webkit-linear-gradient(to right, #b91d73, #f953c6);  /* Chrome 10-25, Safari 5.1-6 */
+          background: linear-gradient(to right, #b91d73, #f953c6); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+          color: #FFFFFF;
       }
   </style>
 </head>
 <body>
 
-<div>
-  <video autoplay id="mainVideo"></video>
+<div class="container">
+  <p id="info">Hey!</p>
+  <button id="record">Start</button>
+  <button id="deRecord">Stop</button>
 </div>
-
-<div>
-  <h4>Last Click!</h4>
-  <img src="images/get_started16.png" alt="image" id="screenshot">
-</div>
-
-<div>
-  <button id="record">start session</button>
-  <button id="deRecord">stop session</button>
-</div>
-
-<a href="" download="screenshot.png" id="download" hidden></a>
 
 <script src="app.js"></script>
 </body>

@@ -1,102 +1,54 @@
 let recordBtn = document.querySelector('#record');
 let deRecordBtn = document.querySelector('#deRecord');
-const video = document.querySelector('#mainVideo');
-const img = document.querySelector('#screenshot');
-const p = document.querySelector('#text');
-const a = document.querySelector('#download');
+let p = document.querySelector('#info');
 
-const sessionState = {
-  intervalId: null,
-  mediaStream: null,
+var port = chrome.runtime.connect();
+
+recordBtn.onclick = function () {
+  port.postMessage('record');
 }
 
-deRecordBtn.onclick = function stopRecord() {
-  console.log('stop recording');
-  const mediaStreamTrack = sessionState.mediaStream.getVideoTracks()[0];
-  mediaStreamTrack.enabled = false;
-  mediaStreamTrack.stop();
-  clearInterval(sessionState.intervalId);
+deRecordBtn.onclick = function () {
+  port.postMessage('deRecord');
 }
 
-recordBtn.onclick = function onRecordClicked() {
-  chrome.desktopCapture.chooseDesktopMedia(['tab', 'window'], accessToRecord);
-}
+port.onMessage.addListener(function (data) {
 
-function accessToRecord(id) {
-  if (!id) {
-    console.log('Access rejected.');
-    return;
+  switch (data.id) {
+    case 'status-reply':
+      console.log('data got', data);
+      data.data.isRecording ? alreadyRecording(data.data.lastClickAt)
+          : allowRecording();
+      break;
+    default:
+      console.log('this is on my html?', data);
   }
 
-  const constraints = {
-    audio: false,
-    video: {
-      mandatory: {
-        chromeMediaSource: 'desktop',
-        chromeMediaSourceId: id
-      }
-    }
-  };
+});
 
-  console.log('starting user media access');
-  navigator.mediaDevices.getUserMedia(constraints)
-           .then((s) => {
-             sessionState.mediaStream = s;
-             return startStream(s)
-           })
-           .catch(function (err) {
-             console.log(err.name + ": " + err.message);
-           }); // always check for errors at the end.
+function alreadyRecording(lastClickAt) {
+  console.log('alreadyRecording');
+  chrome.storage.sync.get(null, function ({interval}) {
+    const d = lastClickAt ? new Date(lastClickAt) : new Date();
+    d.setMilliseconds(d.getMilliseconds() + interval);
+    const options = {
+      year: 'numeric', month: 'numeric', day: 'numeric',
+      hour: 'numeric', minute: 'numeric', second: 'numeric',
+      hour12: false,
+    };
 
-}
-
-async function startStream(mediaStream) {
-  console.log('stream started', mediaStream);
-  video.srcObject = mediaStream;
-  video.onloadedmetadata = function (e) {
-    video.play();
-  };
-
-  chrome.storage.sync.get('interval', function ({interval}) {
-    console.log('capturing clicks every ', interval);
-    sessionState.intervalId = startSession(mediaStream, interval);
+    let newClickAt = new Intl.DateTimeFormat('en-US', options).format(d);
+    p.innerHTML = 'Next click at ' + newClickAt;
   });
-
-  mediaStream.onended = function videoMediaStreamEnded() {
-    console.log('media stream ended!');
-    clearInterval(sessionState.intervalId);
-  }
+  recordBtn.disabled = true;
 }
 
-function startSession(mediaStream, interval) {
-  return setInterval(async function sessionStarted() {
-    await newCapture(mediaStream);
-    download(img);
-  }, interval);
+function allowRecording() {
+  console.log('allowRecording');
+  p.innerHTML = 'Start new session';
+  recordBtn.disabled = false;
 }
 
-async function newCapture(mediaStream) {
-  const mediaStreamTrack = mediaStream.getVideoTracks()[0];
-  const imageCapture = new ImageCapture(mediaStreamTrack);
-  if(!(imageCapture.track.readyState !== 'live' || !imageCapture.track.enabled || imageCapture.track.muted)) {
-    const {width, height} = mediaStreamTrack.getSettings();
-    const osc = new OffscreenCanvas(width, height);
-    const osctx = osc.getContext("2d");
-    const imageBitmap = await imageCapture.grabFrame();
-    osctx.drawImage(imageBitmap, 0, 0);
-    img.src = URL.createObjectURL(await osc.convertToBlob({type: "image/png"}));
-    imageBitmap.close();
-  }
-}
-
-function download(img) {
-  const options = {
-    year: 'numeric', month: 'numeric', day: 'numeric',
-    hour: 'numeric', minute: 'numeric', second: 'numeric',
-    hour12: false,
-  };
-  let clickName = new Intl.DateTimeFormat('en-US', options).format(new Date());
-  a.href = img.src;
-  a.download = `click_session_${clickName}`;
-  a.click();
-}
+(function () {
+  port.postMessage('status');
+})();
