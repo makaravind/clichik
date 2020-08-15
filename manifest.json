@@ -5,11 +5,8 @@
   "description": "Got a virtual party? Clichik will take care of taking screenshots while you enjoy you party!",
   "permissions": [
     "desktopCapture",
-    "activeTab",
     "declarativeContent",
     "storage",
-    "tabCapture",
-    "desktopCapture",
     "<all_urls>"
   ],
   "background": {

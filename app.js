@@ -45,7 +45,7 @@ function alreadyRecording(lastClickAt) {
 
 function allowRecording() {
   console.log('allowRecording');
-  p.innerHTML = 'Start new session';
+ p.innerHTML = 'Starts new session by clicking on start!';
   recordBtn.disabled = false;
 }
 
