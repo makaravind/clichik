@@ -51,7 +51,7 @@ async function startStream(mediaStream) {
   };
   chrome.storage.sync.get('interval', function ({interval}) {
     console.log('capturing clicks every ', interval);
-    sessionState.intervalId = startSession(mediaStream, interval);
+    sessionState.intervalId = startSession(video, mediaStream, interval);
   });
 
   mediaStream.onended = function videoMediaStreamEnded() {
@@ -60,28 +60,30 @@ async function startStream(mediaStream) {
   }
 }
 
-function startSession(mediaStream, interval) {
+function startSession(video, mediaStream, interval) {
   return setInterval(async function sessionStarted() {
-    await newCapture(mediaStream);
+    const blob = await newCaptureCanvas(video);
+    img.src = URL.createObjectURL(blob);
+    console.log('downloading image');
+    download(img);
   }, interval);
 }
 
-async function newCapture(mediaStream) {
-  const mediaStreamTrack = mediaStream.getVideoTracks()[0];
-  const imageCapture = new ImageCapture(mediaStreamTrack);
-  console.log('trying to capture');
-  if (!(imageCapture.track.readyState !== 'live' || !imageCapture.track.enabled
-      || imageCapture.track.muted)) {
-    console.log('capturing..');
-    const {width, height} = mediaStreamTrack.getSettings();
-    const osc = new OffscreenCanvas(width, height);
-    const osctx = osc.getContext("2d");
-    const imageBitmap = await imageCapture.grabFrame();
-    osctx.drawImage(imageBitmap, 0, 0);
-    img.src = URL.createObjectURL(await osc.convertToBlob({type: "image/png"}));
-    imageBitmap.close();
-    download(img);
-  }
+async function newCaptureCanvas(video) {
+  const canvas = document.createElement('canvas');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  const context = canvas.getContext('2d');
+
+  return new Promise((resolve, reject) => {
+    try {
+      context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+      canvas.toBlob(resolve, 'image/png');
+    } catch (e) {
+      reject(e);
+    }
+  });
+
 }
 
 function download(img) {
