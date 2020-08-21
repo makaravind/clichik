@@ -1,11 +1,22 @@
 let recordBtn = document.querySelector('#record');
+let recordBtn2Min = document.querySelector('#record-2min');
 let deRecordBtn = document.querySelector('#deRecord');
 let p = document.querySelector('#info');
 
 var port = chrome.runtime.connect();
 
 recordBtn.onclick = function () {
-  port.postMessage('record');
+  chrome.storage.sync.set({interval: 60000 * 5}, function () {
+    console.log("interval set to 5min");
+    port.postMessage('record');
+  });
+}
+
+recordBtn2Min.onclick = function () {
+  chrome.storage.sync.set({interval: 60000 * 2}, function () {
+    console.log("interval set to 2min");
+    port.postMessage('record');
+  });
 }
 
 deRecordBtn.onclick = function () {
@@ -32,19 +43,23 @@ function alreadyRecording(lastClickAt) {
     const d = lastClickAt ? new Date(lastClickAt) : new Date();
     d.setMilliseconds(d.getMilliseconds() + interval);
     const options = {
-      year: 'numeric', month: 'numeric', day: 'numeric',
-      hour: 'numeric', minute: 'numeric', second: 'numeric',
-      hour12: false,
+      hour: 'numeric', minute: 'numeric'
     };
 
     let newClickAt = new Intl.DateTimeFormat('en-US', options).format(d);
     p.innerHTML = 'Next click at ' + newClickAt;
   });
+  disableRecordButtons();
+}
+
+function disableRecordButtons() {
   recordBtn.disabled = true;
+  recordBtn2Min.disabled = true;
 }
 
 function allowRecording() {
   recordBtn.disabled = false;
+  recordBtn2Min.disabled = false;
 }
 
 (function () {

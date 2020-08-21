@@ -1,50 +1,57 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Clichik</title>
-  <style>
-      button {
-          display: inline-block;
-          padding: 0.3em 1.2em;
-          margin: 0 0.3em 0.3em 0;
-          border-radius: 2em;
-          box-sizing: border-box;
-          text-decoration: none;
-          font-weight: 300;
-          color: #FFFFFF;
-          background-color: #4eb5f1;
-          text-align: center;
-          transition: all 0.2s;
-      }
+    <meta charset="UTF-8">
+    <title>Clichik</title>
+    <style>
+        button {
+            display: inline-block;
+            padding: 0.3em 1.2em;
+            margin: 0 0.3em 0.3em 0;
+            border-radius: 2em;
+            box-sizing: border-box;
+            text-decoration: none;
+            font-weight: 300;
+            color: #FFFFFF;
+            background-color: #4eb5f1;
+            text-align: center;
+            transition: all 0.2s;
+        }
 
-      button:hover {
-          background-color: #4095c6;
-      }
+        button:hover {
+            background-color: #4095c6;
+        }
 
-      .container {
-          display: grid;
-          place-content: center;
-      }
+        .container {
+            display: grid;
+            place-content: center;
+        }
 
-      body {
-          background: #ECE9E6;  /* fallback for old browsers */
-          background: -webkit-linear-gradient(to right, #FFFFFF, #ECE9E6);  /* Chrome 10-25, Safari 5.1-6 */
-          background: linear-gradient(to right, #FFFFFF, #ECE9E6); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-      }
+        body {
+            background: #ECE9E6; /* fallback for old browsers */
+            background: -webkit-linear-gradient(to right, #FFFFFF, #ECE9E6); /* Chrome 10-25, Safari 5.1-6 */
+            background: linear-gradient(to right, #FFFFFF, #ECE9E6); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+            width: 150px;
+        }
 
-      .title {
-          font-weight: 500;
-      }
+        .title {
+            font-weight: 500;
+        }
 
-  </style>
+    </style>
 </head>
 <body>
-<p class="title">Welcome to Clichik!</p>
-<p>Takes screenshot every 5min</p>
-<div class="container">
-  <button id="record">Start</button>
-  <button id="deRecord">Stop</button>
+<div>
+    <section>
+        <p class="title">Welcome to Clichik!</p>
+        <p>Takes screenshot every 5min</p>
+    </section>
+    <div class="container">
+        <button id="record">Start 5min</button>
+        <button id="record-2min">Start 2min</button>
+        <button id="deRecord">Stop</button>
+    </div>
+    <p id="info"></p>
 </div>
 
 <script src="app.js"></script>

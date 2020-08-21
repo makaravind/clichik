@@ -3,7 +3,7 @@
 chrome.runtime.onInstalled.addListener(function () {
 
   chrome.storage.sync.set({interval: 60000 * 5}, function () {
-    console.log("interval set to 5min");
+    console.log("Default - interval set to 5min");
   });
 
   chrome.declarativeContent.onPageChanged.removeRules(undefined, function () {
